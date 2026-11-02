@@ -189,6 +189,6 @@ import os; print(os.path.getsize(mymod.__file__))   # 和本地上传的比对�
 
 ## 相关文件（Integration）
 
-- `../pynq-overlay-load/SKILL.md`（加载前的硬约束）
+- `../pynq-overlay-regmap/SKILL.md`（加载前的硬约束）
 - `../hwh-codegen/SKILL.md`（自动生成自检骨架，可省掉手写轮询）
 - `../verification-methods/SKILL.md`（"改参数没效果 = 改错地方"）

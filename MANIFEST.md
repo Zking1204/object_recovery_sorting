@@ -4,7 +4,7 @@
 
 - **校验时间**：2026-11-02
 - **包根**：`object_recovery_sorting/`
-- **规模**：300 个文件 / 约 14.5 MB（RAR 上传口上限 200 MB）
+- **规模**：277 个文件 / 约 14.5 MB（RAR 上传口上限 200 MB）
 - **校验方法**：逐文件取原文与归档副本做**逐字节/逐行比对**（`Get-FileHash` 与按行数组比对），不是抽查。
 
 ---
@@ -272,7 +272,7 @@ vivado.bat -mode batch -notrace -nojournal -log build.log -source <本包>\build
 
 | 项 | 结果 |
 |---|---|
-| 原始体积 | 约 14.5 MB（300 个文件） |
+| 原始体积 | 约 14.5 MB（277 个文件） |
 | 压缩后 | **5.24 MB**（压缩率 36.1%），耗时 4.7 秒 |
 | RAR 上传口上限 | 200 MB ⇒ **余量约 38 倍** |
 | 最长内部路径 | 156 字符（`src/ip_repo/cnn_top_1/hdl/verilog/…`），在 Windows `MAX_PATH`(260) 内 |

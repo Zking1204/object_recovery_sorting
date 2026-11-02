@@ -241,4 +241,4 @@ val = VDMA0.read(0x04)                # 读
 ## 相关文件（Integration）
 
 - 本项目落地：`src/ps/cam_full.py`（找位流 → 加载 → 时钟自检 → 外设初始化）、`src/ps/pz2_video.py`（寄存器级函数库）
-- 下游：加载完成后怎么验电路行为 → `../onboard-verification/SKILL.md`（如已按合并方案重组，见 `../verification-and-gates/SKILL.md`）
+- 下游：加载完成后怎么验电路行为 → `../onboard-verification/SKILL.md`
