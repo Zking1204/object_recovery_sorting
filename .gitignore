@@ -13,3 +13,6 @@ _*_build/
 # Python
 __pycache__/
 *.pyc
+
+# The design report is delivered inside the submission package only, not in the public repo
+report/
