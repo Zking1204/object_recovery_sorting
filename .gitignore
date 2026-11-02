@@ -1,0 +1,15 @@
+# Vivado / xsim 中间产物
+_sim/
+_lint/
+*.jou
+*.log
+*.str
+*.pb
+*.rpx
+*.wdb
+.Xil/
+_*_build/
+
+# Python
+__pycache__/
+*.pyc

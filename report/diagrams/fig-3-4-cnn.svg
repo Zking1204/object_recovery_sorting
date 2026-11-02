@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 470" width="1080" height="470" font-family="Microsoft YaHei, PingFang SC, sans-serif">
+<defs>
+  <marker id="a4" viewBox="0 0 10 10" refX="9.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="#333333"/>
+  </marker>
+  <marker id="r4" viewBox="0 0 10 10" refX="9.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="#B5392A"/>
+  </marker>
+  <style>
+    .blk{fill:#f7f3ec;stroke:#8a7f6d;stroke-width:1.2;}
+    .ps{fill:#eef4f8;stroke:#2C6E9B;stroke-width:1.6;}
+    .core{fill:#fdf0ee;stroke:#B5392A;stroke-width:1.8;}
+    .tb{font-size:12.5px;font-weight:700;fill:#1a1a1a;}
+    .s{font-size:10.5px;fill:#5a5a5a;}
+    .red{font-size:11px;fill:#B5392A;font-weight:700;}
+    .ln{stroke:#333333;stroke-width:1.3;fill:none;marker-end:url(#a4);}
+    .ret{stroke:#B5392A;stroke-width:1.3;fill:none;stroke-dasharray:6 4;marker-end:url(#r4);}
+    .fr{fill:none;stroke:#8a7f6d;stroke-width:1;stroke-dasharray:7 5;}
+  </style>
+</defs>
+
+<!-- PS 侧 -->
+<rect class="ps" x="16" y="150" width="142" height="170" rx="3"/>
+<text class="tb" x="87" y="178" text-anchor="middle">PS 侧 Python</text>
+<text class="s" x="87" y="198" text-anchor="middle">cnn_pl_infer.py</text>
+<line x1="40" y1="210" x2="134" y2="210" stroke="#c9c2b6" stroke-width="1"/>
+<text class="s" x="87" y="230" text-anchor="middle">装载权重</text>
+<text class="s" x="87" y="248" text-anchor="middle">写入 64×64 输入</text>
+<text class="s" x="87" y="266" text-anchor="middle">触发 / 轮询 AP_IDLE</text>
+<text class="s" x="87" y="284" text-anchor="middle">读回 6 维 logits</text>
+<text class="s" x="87" y="302" text-anchor="middle">softmax → 类别</text>
+
+<!-- cnn_top 内部虚框 -->
+<rect class="fr" x="186" y="126" width="680" height="236" rx="4"/>
+<text class="s" x="192" y="120">cnn_top_0（HLS 综合，100 MHz，v1.4）</text>
+
+<rect class="blk" x="196" y="150" width="180" height="60" rx="3"/>
+<text class="tb" x="286" y="176" text-anchor="middle">控制 / 状态寄存器</text>
+<text class="s" x="286" y="196" text-anchor="middle">AP_START · AP_IDLE · AP_DONE</text>
+
+<rect class="blk" x="196" y="230" width="180" height="70" rx="3"/>
+<text class="tb" x="286" y="254" text-anchor="middle">权重 BRAM</text>
+<text class="s" x="286" y="272" text-anchor="middle">blob · bias</text>
+<text class="s" x="286" y="288" text-anchor="middle">mmult · mshift</text>
+
+<rect class="blk" x="196" y="320" width="180" height="70" rx="3"/>
+<text class="tb" x="286" y="344" text-anchor="middle">输入缓冲</text>
+<text class="s" x="286" y="362" text-anchor="middle">64×64×3 int8</text>
+<text class="s" x="286" y="378" text-anchor="middle">＝12 288 B</text>
+
+<rect class="core" x="430" y="196" width="200" height="180" rx="3"/>
+<text class="tb" x="530" y="222" text-anchor="middle">计算阵列</text>
+<text class="s" x="530" y="244" text-anchor="middle">卷积 → 池化</text>
+<text class="s" x="530" y="262" text-anchor="middle">→ 全连接</text>
+<line x1="450" y1="276" x2="610" y2="276" stroke="#d8b8b2" stroke-width="1"/>
+<text class="red" x="530" y="296" text-anchor="middle">POC = 16</text>
+<text class="s" x="530" y="314" text-anchor="middle">128 MAC / 周期</text>
+<text class="s" x="530" y="332" text-anchor="middle">int8 乘加 + 乘数移位</text>
+<text class="s" x="530" y="350" text-anchor="middle">权重复用，全驻 BRAM</text>
+
+<rect class="blk" x="680" y="230" width="166" height="80" rx="3"/>
+<text class="tb" x="763" y="258" text-anchor="middle">输出寄存器</text>
+<text class="s" x="763" y="278" text-anchor="middle">6 × int8 logits</text>
+<text class="s" x="763" y="296" text-anchor="middle">无 softmax</text>
+
+<!-- 连线 -->
+<polyline class="ln" points="158,180 180,180 180,180 196,180"/>
+<polyline class="ln" points="286,210 286,230"/>
+<polyline class="ln" points="376,180 406,180 406,355 376,355"/>
+<polyline class="ln" points="376,265 430,265"/>
+<polyline class="ln" points="376,355 430,355"/>
+<polyline class="ln" points="630,280 680,280"/>
+
+<!-- 回读 -->
+<polyline class="ret" points="763,310 763,404 87,404 87,320"/>
+<text class="red" x="425" y="420" text-anchor="middle">PS 读回 logits → softmax → 类别 + 置信度（拒识不画框）</text>
+
+<!-- 关键数据 -->
+<text class="s" x="16" y="450">实测：内核 9.15 ms ／ infer() 10.18 ms ／ classify() 14.62 ms（生产均值 16.8 ms）　有效算力 6.58 GMAC/s（峰值 52%）</text>
+</svg>
