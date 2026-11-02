@@ -482,4 +482,4 @@ BD 共 **20 个 cell**，分三类：
 
 ## 8 许可
 
-MIT，见 `LICENSE`。`src/ip_repo/` 下第三方 IP 各自保留其原有条款。
+MIT，见 `LICENSE`；`src/ip_repo/` 下第三方 IP 的归属与再分发说明见 `THIRD_PARTY_NOTICES.md`。
