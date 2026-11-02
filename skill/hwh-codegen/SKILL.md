@@ -136,6 +136,6 @@ origin: "手工维护的地址表多次与 block design 漂移，改完 BD 后�
 
 ## 相关文件（Integration）
 
-- `../pynq-regmap/SKILL.md`（寄存器映射的手工做法；本文件的目标是把它自动化）
+- `../pynq-overlay-regmap/SKILL.md`（寄存器映射与地址来源的手工做法；本文件的目标是把它自动化）
 - `../util-timing-collect/SKILL.md`（自检产出的证据怎么留档）
 - `../verification-methods/SKILL.md`（`.hwh` 频率不可信那条的出处）

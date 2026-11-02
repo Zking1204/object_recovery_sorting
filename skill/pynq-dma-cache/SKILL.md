@@ -166,6 +166,6 @@ def feed_frames(buf, views, data):
 ## 相关文件（Integration）
 
 - **封装的实际使用者**：`../../bitstream/cam_full.py`（`buf0.flush()` / 抓帧代码）
-- **上游**：先把 overlay 正确加载 → `../pynq-overlay-load/SKILL.md`
+- **上游**：先把 overlay 正确加载 → `../pynq-overlay-regmap/SKILL.md`
 - **下游**：拿到帧之后怎么比对 → `../golden-compare/SKILL.md`
 - **相关的帧率测量陷阱**：`设计报告第 6 章`
