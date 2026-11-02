@@ -38,11 +38,10 @@ OV5640 ─► PL：背景差分定位（14 拍流水线）─► 掩膜
 | `src/ip_repo/` | **第三方 IP 源码**（BD 重建必需，共 4 个） |
 | `sim/` | 各级 testbench（Verilog / SystemVerilog）与批量跑法 |
 | `build/bd/` | **复现入口**：`create_project.tcl`（建工程 + 恢复 BD）、`build_bitstream.tcl`（综合 + 实现 + 出位流）、`design_1.bd` / `.bda` |
-| `build/constraints/` | 实际使用的引脚与时序约束 `top.xdc`（`history/` 下是旧的快照，勿用） |
+| `build/constraints/` | 实际使用的引脚与时序约束 `top.xdc` |
 | `build/report/` | 利用率 / 时序 / 方法学 / DRC 报告（原件，头部 `Command :` 行带着原机器路径，属证据） |
 | `build/deliver.py` | 交付脚本：自动找位流与 hwh → **给 `.hwh` 打 FCLK0 分频补丁** → 整理上板文件（漏跑会黑屏，见 §3.5） |
-| `build/history/` | 原工程的历史脚本，**写死了原机器绝对路径、复现不要用**（见该目录 README） |
-| `board/` | 位流、`.hwh`、上传清单、板端运行记录、tflite 运行时 wheel |
+| `board/` | 位流、`.hwh`、上传清单、tflite 运行时 wheel |
 | `data/` | 模型权重 bin、量化 tflite、黄金参考、PC 端生成脚本 |
 | `skill/` | 技能包（可复用的工程经验，见 `skill/README.md`） |
 | `report/` | 设计报告源文件（`design_report.md`）、**大模型协作详细记录**（`ai_collaboration.md`）与全部矢量插图 |
@@ -350,7 +349,6 @@ open_run impl_1                          ;# 再出 util / timing / drc / methodo
 ★ **不要**加 `set_param general.maxThreads 8`：本机会卡死在 Tech Mapping（CPU 45 秒零增长、日志时间戳不前进，常伴随 `Failed to create directory 'C'`）。
 ★ **不要**把 `-jobs` 调到 1 以上：并行多个 run 会 OOM。
 
-> `build/history/` 下放着**原始工程**用的三个历史脚本（`bd_step10_v14.tcl`、`bd_step11_build_v14.tcl`、`ooc_syn.tcl`）。它们写死了原机器的绝对路径（`D:/AMD/PROJECT/...`），**复现时不要用**，功能已被 `create_project.tcl` + `build_bitstream.tcl` 取代，详见 `build/history/README.md`。
 
 ### 3.5 详解：交付补丁（对应步骤 3）
 
@@ -389,7 +387,7 @@ python build/deliver.py
 | `RuntimeError: ... tflite_infer.py 是旧的` | `cnn_pl_infer.py` 有门禁，要求 `tflite_infer.SIZE == 64` | 用本包 `src/ps/tflite_infer.py`（已修正为 64） |
 | 想 grep 日志里的中文判据，却发现全是乱码 | Vivado 的 `.log` **混合了 UTF-8（Tcl puts）与 ANSI/GBK（Vivado 消息）** | 别 grep 中文。用 `findstr /C:"CHECK "` 抓本包脚本打的 ASCII 判据行；或 `findstr /C:"ERROR:"` |
 | Vivado 报 `Could not open file` | 个别步骤对超长路径敏感 | **中文路径可以使用**（本作品全程在含中文的路径下构建通过）；若确实报错，换一个较短路径（如 `D:\objrs`）再试。包可以放在任意盘符、任意目录，只要里面文件结构不变 |
-| 想确认"包里还有没有写死别的机器路径" | — | 在本包根目录执行 `findstr /S /I /C:"D:\AMD" /C:"C:\Users" *.tcl *.py *.ps1 *.md`。**正常只应命中 `build/history/`、`build/report/` 里的原件，以及脚本文档里作为"反例"出现的字符串** |
+| 想确认"包里还有没有写死别的机器路径" | — | 在本包根目录执行 `findstr /S /I /C:"D:\AMD" /C:"C:\Users" *.tcl *.py *.ps1 *.md`。**正常只应命中 `build/report/` 里的报告原件，以及文档中作为"反例"出现的字符串** |
 
 ---
 

@@ -4,7 +4,7 @@
 
 - **校验时间**：2026-11-02
 - **包根**：`object_recovery_sorting/`
-- **规模**：305 个文件 / 约 14.5 MB（RAR 上传口上限 200 MB）
+- **规模**：300 个文件 / 约 14.5 MB（RAR 上传口上限 200 MB）
 - **校验方法**：逐文件取原文与归档副本做**逐字节/逐行比对**（`Get-FileHash` 与按行数组比对），不是抽查。
 
 ---
@@ -53,11 +53,11 @@
 | `src/ps/tflite_infer.py` | `SIZE = 42` → `SIZE = 64` | 工程内这份是旧值；`cnn_pl_infer.py` 有硬门禁 `if int(ti.SIZE) != 64: raise RuntimeError(...)`。若把 42 的版本传上板，按"② 加载识别"按钮会当场抛错。64 与 `model_int8_64.tflite` 及板上那份一致 |
 | `src/ps/cam_full.py` | **一行注释**：`跑 D:\AMD\PROJECT\k_deliver.py` → `跑提交包里的 build/deliver.py` | 那条注释是"黑屏排查"的指路牌，指向别人机器上不存在的路径等于没指。逻辑零改动 |
 | `src/hls/tb_cnn.cpp` | `DATADIR` 默认值从原机器绝对路径改为相对 `../../../data/csim`，并注明可用 `-DDATADIR=` 覆盖 | C 仿真要读 `data/csim/` 里的黄金张量；写死绝对路径别人跑不了 |
-| `build/constraints/history/new_top_pz2.xdc` | 文件头加了"历史快照，不要用于构建"的注释 | 它是 2026-09-17 的手写旧版，端口命名已过时。真正在用的是 `build/constraints/top.xdc` |
 | `src/rtl/` 下 8 个 `.v` 的**注释文字** | 把「玻璃 / 缺陷 / 划痕 / 裂痕 / 污渍 / 气泡」等历史词汇替换为中性表述（目标 / 定位流水线 / 细线 / 斑块 / 大面积区域…），约 120 处 | 本作品最终定位是物品回收分拣。**只动注释、不动任何一行有效代码** |
 
 **目录整理**：原工程的三个历史脚本（`bd_step10_v14.tcl`、`bd_step11_build_v14.tcl`、`ooc_syn.tcl`）
-含写死的原机器绝对路径，已移入 `build/history/` 并附 README 说明"复现不要用"。
+含写死的原机器绝对路径，**已从提交包中移除、不随包分发**；同样的整理还包括旧版约束快照
+`new_top_pz2.xdc`。本包只保留构建实际使用的 `build/bd/*.tcl` 与 `build/constraints/top.xdc`。
 另修复了 `data/dump_tflite.py`、`sim/tools/test_track.py`、`sim/run_all.ps1` 与
 `skill/util-timing-collect/SKILL.md` 里的写死路径（改成按文件位置推算 / 占位符 / 自动探测）。
 
@@ -232,7 +232,7 @@ vivado.bat -mode batch -notrace -nojournal -log build.log -source <本包>\build
 | 类别 | 处理 |
 |---|---|
 | **必须修（8 处）** | `data/dump_tflite.py` 默认输入参数、`src/hls/tb_cnn.cpp` 的 `DATADIR`、`sim/tools/test_track.py` 的 `sys.path`、`sim/run_all.ps1` 的 Vivado 默认路径、`src/ps/cam_full.py` 里一条指错的注释、`skill/util-timing-collect/SKILL.md` 的两处示例路径、`sim/tb_dd_gray.v` 与 `sim/tb_dd_thresh.v` 文件头里指向原工程的运行方式 —— 全部改为**按文件位置推算 / 占位符 / 自动探测 / 指向 `sim/README.md`** |
-| **隔离（3 个）** | `bd_step10_v14.tcl`、`bd_step11_build_v14.tcl`、`ooc_syn.tcl` 移入 `build/history/`，附 README 说明"复现不要用、现在用哪个替代" |
+| **移除（3 个）** | `bd_step10_v14.tcl`、`bd_step11_build_v14.tcl`、`ooc_syn.tcl` 三个原工程历史脚本**已从包中移除、不随包分发**（功能由 `create_project.tcl` + `build_bitstream.tcl` 取代） |
 | **保留（6 处）** | `build/report/*.rpt` 头部 `Command :` 行 —— 这是**实现报告原件**，路径本身就是证据，不改 |
 
 修正后再按 README §3.1 完整执行一遍：
@@ -253,7 +253,7 @@ vivado.bat -mode batch -notrace -nojournal -log build.log -source <本包>\build
 | hwh 参数级比对 | **2254 / 2254 条，值不同 0 处** |
 
 > 这一轮的结论：**在只读文档、只用包内文件的前提下，从零能重建出与交付版等价的位流与硬件描述。**
-> 清完写死路径后再扫一遍，`*.tcl / *.py / *.ps1 / *.v / *.cpp` 里只剩 `build/history/` 下那 3 个历史脚本还带原机器路径（已在文档里明确标注为不可用）。
+> 清完写死路径后再扫一遍，`*.tcl / *.py / *.ps1 / *.v / *.cpp` 中已无原机器路径残留（历史脚本与旧约束快照已移出本包）。
 
 ---
 
@@ -272,7 +272,7 @@ vivado.bat -mode batch -notrace -nojournal -log build.log -source <本包>\build
 
 | 项 | 结果 |
 |---|---|
-| 原始体积 | 约 14.5 MB（305 个文件） |
+| 原始体积 | 约 14.5 MB（300 个文件） |
 | 压缩后 | **5.24 MB**（压缩率 36.1%），耗时 4.7 秒 |
 | RAR 上传口上限 | 200 MB ⇒ **余量约 38 倍** |
 | 最长内部路径 | 156 字符（`src/ip_repo/cnn_top_1/hdl/verilog/…`），在 Windows `MAX_PATH`(260) 内 |
